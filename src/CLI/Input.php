@@ -185,7 +185,7 @@ class Input
 				$index  = $i+1;
 				$option = sprintf(
 					'  %s %s',
-					Output::colorize( "[{$index}]", 'green' ),
+					Format::colorize( "[{$index}]", 'green' ),
 					$choices[$i]
 				);
 
@@ -196,8 +196,8 @@ class Input
 
 		$output = sprintf(
 			'%s [%s]: ',
-			Output::colorize( $prompt, 'green' ),
-			Output::colorize( $default, 'yellow' )
+			Format::colorize( $prompt, 'green' ),
+			Format::colorize( $default, 'yellow' )
 		);
 
 		$response = readline( $output );
