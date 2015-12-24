@@ -40,7 +40,7 @@ class Command
 	 * @var array
 	 */
 	protected $subcommands=[];
-	
+
 	/**
 	 * @var string
 	 */
@@ -59,11 +59,13 @@ class Command
 	}
 
 	/**
+	 * Alias for self::registerAlias
+	 *
 	 * @param	string	$alias
 	 */
 	public function addAlias($alias)
 	{
-		$this->aliases[] = $alias;
+		$this->registerAlias( $alias );
 	}
 
 	/**
@@ -192,6 +194,15 @@ class Command
 	}
 
 	/**
+	 * @param	string	$alias
+	 * @return	void
+	 */
+	public function registerAlias( $alias )
+	{
+		$this->aliases[] = $alias;
+	}
+
+	/**
 	 * @param	string	$option
 	 */
 	public function registerOption($option)
@@ -217,7 +228,7 @@ class Command
 		{
 			// Verify that static method exists
 			$pieces = explode('::', $closure);
-	
+
 			if(count($pieces) == 2 && method_exists($pieces[0], $pieces[1]))
 			{
 				$this->closure = $closure->bindTo($this);
@@ -263,5 +274,3 @@ class Command
 		$this->usage = $usage;
 	}
 }
-
-?>
