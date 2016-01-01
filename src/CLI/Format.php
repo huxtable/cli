@@ -13,18 +13,19 @@ class Format
 	 * @param	string	$background		Name of background color
 	 * @return	string
 	 */
-	static public function colorize($string, $foreground=null, $background=null)
+	static public function colorize($string, $foreground=null, $background=null, $bold=false)
 	{
+		$prefix = $bold ? "1" : "0";
 		$foregroundColors =
 		[
-			'black'		=> '0;30',
-			'red'		=> '0;31',
-			'green'		=> '0;32',
-			'yellow'	=> '0;33',
-			'blue'		=> '0;34',
-			'purple'	=> '0;35',
-			'cyan'		=> '0;36',
-			'gray'		=> '0;37',
+			'black'		=> "{$prefix};30",
+			'red'		=> "{$prefix};31",
+			'green'		=> "{$prefix};32",
+			'yellow'	=> "{$prefix};33",
+			'blue'		=> "{$prefix};34",
+			'purple'	=> "{$prefix};35",
+			'cyan'		=> "{$prefix};36",
+			'gray'		=> "{$prefix};37",
 		];
 
 		$backgroundColors =
@@ -63,7 +64,7 @@ class Format
 		$date = getdate($timestamp);
 
 		$detail = ($now[0] - $date[0] <= 15778500) ? sprintf('%02s:%02s', $date['hours'], $date['minutes']) : $date['year'];
-		
+
 		return sprintf('%.3s %2s %5s', $date['month'], $date['mday'], $detail);
 	}
 
