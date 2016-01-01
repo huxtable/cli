@@ -42,9 +42,14 @@ class Listing
 		$padding = $maxLength + 4;
 
 		// Render each line
-		$indexMid   = floor( count( $this->items ) / 2 );
+		$indexMid   = ceil( count( $this->items ) / 2 );
 		$indexLeft  = 0;
 		$indexRight = $indexMid;
+
+		if( count( $this->items ) == 0 )
+		{
+			return;
+		}
 
 		while( isset( $this->items[$indexLeft] ) && $indexLeft < $indexMid )
 		{
