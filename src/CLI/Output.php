@@ -13,6 +13,16 @@ class Output
 	protected $buffer='';
 
 	/**
+	 * @var	number
+	 */
+	protected $cols;
+
+	/**
+	 * @var	number
+	 */
+	protected $rows;
+
+	/**
 	 * @return	string
 	 */
 	public function flush()
@@ -25,7 +35,7 @@ class Output
 	 */
 	public function getCols()
 	{
-		return exec( 'tput cols' );
+		return is_null( $this->cols ) ? exec( 'tput cols' ) : $this->cols;
 	}
 
 	/**
@@ -33,7 +43,7 @@ class Output
 	 */
 	public function getRows()
 	{
-		return exec( 'tput lines' );
+		return is_null( $this->rows ) ? exec( 'tput lines' ) : $this->rows;
 	}
 
 	/**
@@ -53,7 +63,7 @@ class Output
 			return;
 		}
 
-		$buffer = substr( $string, 0, $width );
+		$buffer = substr( $string, 0, $width ) . PHP_EOL;
 		$bufferRight = substr( $string, $width );
 
 		$lines = str_split( $bufferRight, $width - $indent );
@@ -65,7 +75,7 @@ class Output
 				$buffer .= ' ';
 			}
 
-			$buffer .= $line;
+			$buffer .= ltrim( $line ) . PHP_EOL;
 		}
 
 		$this->buffer .= $buffer . PHP_EOL;
@@ -77,6 +87,24 @@ class Output
 	public function line($string)
 	{
 		$this->buffer = $this->buffer . $string . PHP_EOL;
+	}
+
+	/**
+	 * @param	number	$cols
+	 * @return	void
+	 */
+	public function setCols( $cols )
+	{
+		$this->cols = $cols;
+	}
+
+	/**
+	 * @param	number	$rows
+	 * @return	void
+	 */
+	public function setRows( $rows )
+	{
+		$this->rows = $rows;
 	}
 
 	/**
