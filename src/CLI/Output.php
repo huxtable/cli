@@ -78,7 +78,7 @@ class Output
 			$buffer .= ltrim( $line ) . PHP_EOL;
 		}
 
-		$this->buffer .= $buffer . PHP_EOL;
+		$this->buffer .= $buffer;
 	}
 
 	/**
