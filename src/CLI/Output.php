@@ -21,6 +21,21 @@ class Output
 	}
 
 	/**
+	 * @return	number
+	 */
+	public function getCols()
+	{
+		return exec( 'tput cols' );
+	}
+
+	/**
+	 * @return	number
+	 */
+	public function getRows()
+	{
+		return exec( 'tput lines' );
+	}
+
 	 * @param	string	$string
 	 */
 	public function line($string)
