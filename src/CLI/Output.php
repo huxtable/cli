@@ -84,7 +84,7 @@ class Output
 	/**
 	 * @param	string	$string
 	 */
-	public function line($string)
+	public function line($string='')
 	{
 		$this->buffer = $this->buffer . $string . PHP_EOL;
 	}
