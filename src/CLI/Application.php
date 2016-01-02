@@ -174,6 +174,8 @@ USAGE;
 	 */
 	public function commandHelp($commandName=null)
 	{
+		$output = new Output();
+
 		if(is_null($commandName))
 		{
 			return $this->getUsage();
@@ -184,14 +186,14 @@ USAGE;
 
 		if(count($subcommands) == 0)
 		{
-			return sprintf('usage: %s %s', $this->name, $command->getUsage());
+			$output->line( sprintf( 'usage: %s %s', $this->name, $command->getUsage() ) );
+			return $output->flush();
 		}
 
-		$output = <<<OUTPUT
+		$help = <<<OUTPUT
 usage: %s
 
 Subcommands for '{$commandName}' are:
-%s
 OUTPUT;
 
 		$usage = '';
@@ -199,14 +201,21 @@ OUTPUT;
 
 		foreach($subcommands as $command)
 		{
-			$usage .= sprintf("%s \033[4;29m%s\033[0m %s", $this->name, $commandName, str_replace($command->getName(), "\033[4;29m{$command->getName()}\033[0m", $command->getUsage())).PHP_EOL.'       ';
+			$usage .= sprintf
+			(
+				"%s \033[4;29m%s\033[0m %s",
+				$this->name,
+				$commandName,
+				str_replace( $command->getName(), "\033[4;29m{$command->getName()}\033[0m", $command->getUsage() )
+			) . PHP_EOL . '       ';
 
-			$descriptions .= sprintf('   %-11s%s', $command->getName(), $command->getDescription()).PHP_EOL;
+			$output->indentedLine( sprintf('   %-11s%s', $command->getName(), $command->getDescription() ), 14 );
 		}
 
-		$output = sprintf($output, trim($usage), $descriptions);
+		$help = sprintf( $help, trim( $usage ) );
 
-		return $output.PHP_EOL;
+		$output->unshiftLine( $help );
+		return $output->flush();
 	}
 
 	/**
@@ -287,23 +296,27 @@ OUTPUT;
 
 		return $this->commands[$name];
 	}
-	
+
 	/**
 	 * @return	string
 	 */
 	public function getUsage()
 	{
-		$usage  = "usage: {$this->name} [--version] <command> [<args>]".PHP_EOL.PHP_EOL;
-		$usage .= "Commands are:".PHP_EOL;
+		$output = new Output();
+
+		$output->line( "usage: {$this->name} [--version] <command> [<args>]" );
+		$output->line();
+		$output->line( "Commands are:" );
 
 		foreach($this->commands as $command)
 		{
-			$usage .= sprintf('   %-11s%s', $command->getName(), $command->getDescription()).PHP_EOL;
+			$output->indentedLine( sprintf( '   %-11s%s', $command->getName(), $command->getDescription() ), 14 );
 		}
 
-		$usage .= PHP_EOL."See '{$this->name} help <command>' to read about a specific command";
+		$output->line();
+		$output->indentedLine( "See '{$this->name} help <command>' to read about a specific command", 0 );
 
-		return $usage;
+		return $output->flush();
 	}
 
 	/**
@@ -352,7 +365,7 @@ OUTPUT;
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public function run()
 	{
@@ -400,7 +413,7 @@ OUTPUT;
 					else
 					{
 						$this->output = $this->getUsage();
-					}					
+					}
 					break;
 			}
 
@@ -538,7 +551,7 @@ OUTPUT;
 			{
 				echo 'done.' . PHP_EOL;
 			}
-			
+
 			$result['status'] = self::UPGRADE_ALREADY_NEWEST;
 			return $result;
 		}
