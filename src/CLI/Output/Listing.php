@@ -5,6 +5,8 @@
  */
 namespace Huxtable\CLI\Output;
 
+use Huxtable\CLI\Format;
+
 class Listing extends \Huxtable\CLI\Output
 {
 	/**
@@ -32,9 +34,11 @@ class Listing extends \Huxtable\CLI\Output
 		$maxLength = 0;
 		foreach( $this->items as $item )
 		{
-			if( strlen( $item ) >  $maxLength )
+			$itemLength = $item instanceof Format\String ? $item->length() : strlen( $item );
+
+			if( $itemLength >  $maxLength )
 			{
-				$maxLength = strlen( $item );
+				$maxLength = $itemLength;
 			}
 		}
 
@@ -49,16 +53,6 @@ class Listing extends \Huxtable\CLI\Output
 			return;
 		}
 
-		if( $rows == 1 )
-		{
-			foreach( $this->items as $item )
-			{
-				$items[] = sprintf( "%-{$padding}s", $item );
-			}
-
-			return implode( '', $items );
-		}
-
 		for( $r = 0; $r < $rows; $r++ )
 		{
 			$line = '';
@@ -68,7 +62,16 @@ class Listing extends \Huxtable\CLI\Output
 				$index = $r + ($c * $rows);
 				if( isset( $this->items[$index] ) )
 				{
-					$line .= sprintf( "%-{$padding}s", $this->items[$index] );
+					$item = $this->items[$index];
+					$itemLength = $item instanceof Format\String ? $item->length() : strlen( $item );
+
+					$line .= $item;
+
+					$spaces = $padding - $itemLength;
+					for( $s = 1; $s <= $spaces; $s++ )
+					{
+						$line .= ' ';
+					}
 				}
 			}
 
