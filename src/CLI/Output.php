@@ -116,6 +116,84 @@ class Output
 	}
 
 	/**
+	 * @param	array	$data
+	 * @return	void
+	 */
+	public function table( $data )
+	{
+		$fields = array_keys( $data[0] );
+
+		$maxLengths = [];
+		foreach( $fields as $field )
+		{
+			$maxLengths[$field] = strlen( $field );
+		}
+
+		// Find max lengths for padding
+		foreach( $data as $record )
+		{
+			foreach( $record as $key => $value )
+			{
+				$length = is_array( $value ) ? 2 * count( $value ) - 1 : strlen( $value );
+
+				if( $length > $maxLengths[$key] )
+				{
+					$maxLengths[$key] = strlen( $value );
+				}
+			}
+		}
+
+		$rowLen = array_sum( $maxLengths ) + (3 * count( $fields ) + 1);
+		$divider = '';
+		for( $i = 0; $i < $rowLen; $i++ )
+		{
+			switch( $i )
+			{
+				case 0:
+				case $rowLen - 1:
+					$char = '+';
+					break;
+
+				default:
+					$char = '-';
+					break;
+			}
+
+			$divider .= $char;
+		}
+
+		echo $divider . PHP_EOL;
+
+		// Header row
+		echo '|';
+		foreach( $fields as $field )
+		{
+			echo sprintf( " %-{$maxLengths[$field]}s |", $field );
+		}
+		echo PHP_EOL;
+
+		echo $divider . PHP_EOL;
+
+		// Data rows
+		foreach( $data as $result )
+		{
+			echo '|';
+			foreach( $result as $field => $value )
+			{
+				if( is_array( $value ) )
+				{
+					$value = implode( ',', $value );
+				}
+				echo sprintf( " %-{$maxLengths[$field]}s |", $value );
+			}
+
+			echo PHP_EOL;
+		}
+
+		echo $divider . PHP_EOL;
+	}
+
+	/**
 	 * @param	string	$string
 	 */
 	public function unshiftLine($string)
