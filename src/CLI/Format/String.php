@@ -18,6 +18,16 @@ class String
 	protected $foregroundColor;
 
 	/**
+	 * @var	string
+	 */
+	protected $paddingCharacter;
+
+	/**
+	 * @var	number
+	 */
+	protected $paddingLength;
+
+	/**
 	 * Foreground color prefix, which affects properties like bold, underline, etc.
 	 *
 	 * @var	number
@@ -82,7 +92,29 @@ class String
 		$string .= isset( $foregroundColor) ? "\033[{$foregroundColor}m" : '';
 		$string .= isset( $backgroundColor) ? "\033[{$backgroundColor}m" : '';
 		$string .= $this->string;
-		$string .= "\033[0m";
+		$string .= isset( $foregroundColor) || isset( $backgroundColor) ? "\033[0m" : '';
+
+		if( isset( $this->paddingCharacter ) )
+		{
+			$paddingCount = abs( $this->paddingLength ) - strlen( $this->string );
+			$padding = '';
+
+			for( $i = 1; $i <= $paddingCount; $i++ )
+			{
+				$padding .= $this->paddingCharacter;
+			}
+
+			// Like sprintf, positive number for right justification...
+			if( $this->paddingLength > 0 )
+			{
+				$string .= $padding;
+			}
+			// ...negative for left justification
+			else
+			{
+				$string = $padding . $string;
+			}
+		}
 
 		return $string;
 	}
@@ -122,6 +154,19 @@ class String
 	public function foregroundColor( $color )
 	{
 		$this->foregroundColor = $color;
+		return $this;
+	}
+
+	/**
+	 * @param	number	$length		Number of leading (or trailing) characters
+	 * @param	string	$character	Character to use, defaults to spaces
+	 * @return	self
+	 */
+	public function pad( $length, $character=' ' )
+	{
+		$this->paddingLength = $length;
+		$this->paddingCharacter = $character;
+
 		return $this;
 	}
 
