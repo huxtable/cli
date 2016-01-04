@@ -47,56 +47,15 @@ class Output
 	}
 
 	/**
-	 * Add line to buffer, automatically indenting based on width
+	 * Alias for self::wrappedLine
 	 *
-	 * @param	string	$string
-	 * @param	number	$indent
+	 * @param	string	$string		String to wrap
+	 * @param	number	$indent		Number of spaces used to indent subsequent lines
+	 * @return	void
 	 */
 	public function indentedLine( $string, $indent )
 	{
-		$length = strlen( $string );
-		$width = $this->getCols();
-
-		// Save some cycles for strings that already don't wrap
-		if( $length <= $width )
-		{
-			$this->buffer .= $string . PHP_EOL;
-			return;
-		}
-
-		$buffer = '';
-		$isFirstLine = true;
-
-		while( strlen( $string ) > 0 )
-		{
-			$currentIndent = $isFirstLine ? 0 : $indent;
-
-			// Add indentation now to save a lot of offset acrobatics :)
-			for( $i=1; $i <= $currentIndent; $i++ )
-			{
-				$string = ' ' . $string;
-			}
-
-			// If neither character is a space, slide back until one of them is
-			$offset = 0;
-			$lineBreak = substr( $string, $width - 1 + $offset, 2 );
-
-			while( strlen( trim( $lineBreak ) ) == 2 )
-			{
-				$offset--;
-				$lineBreak = substr( $string, $width - 1 + $offset, 2 );
-			};
-
-			// This line is done, add it to the buffer
-			$buffer .= substr( $string, 0, $width + $offset ) . PHP_EOL;
-
-			// Trim off used portion of string
-			$string = substr( $string, $width + $offset );
-
-			$isFirstLine = false;
-		}
-
-		$this->buffer .= $buffer;
+		$this->wrappedLine( $string, $indent );
 	}
 
 	/**
@@ -217,5 +176,56 @@ class Output
 	public function unshiftLine($string)
 	{
 		$this->buffer = $string . PHP_EOL . $this->buffer;
+	}
+
+	/**
+	 * @param	string	$string		String to wrap
+	 * @param	number	$indent		Number of spaces used to indent subsequent lines
+	 * @return	void
+	 */
+	public function wrappedLine( $string, $indent )
+	{
+		$width = $this->getCols();
+
+		// Save some cycles for strings that already don't wrap
+		if( strlen( $string ) <= $width )
+		{
+			$this->buffer .= $string . PHP_EOL;
+			return;
+		}
+
+		$buffer = '';
+		$isFirstLine = true;
+
+		while( strlen( $string ) > 0 )
+		{
+			$currentIndent = $isFirstLine ? 0 : $indent;
+
+			// Add indentation now to save a lot of offset acrobatics :)
+			for( $i=1; $i <= $currentIndent; $i++ )
+			{
+				$string = ' ' . $string;
+			}
+
+			// If neither character is a space, slide back until one of them is
+			$offset = 0;
+			$lineBreak = substr( $string, $width - 1 + $offset, 2 );
+
+			while( strlen( trim( $lineBreak ) ) == 2 )
+			{
+				$offset--;
+				$lineBreak = substr( $string, $width - 1 + $offset, 2 );
+			};
+
+			// This line is done, add it to the buffer
+			$buffer .= substr( $string, 0, $width + $offset ) . PHP_EOL;
+
+			// Trim off used portion of string
+			$string = substr( $string, $width + $offset );
+
+			$isFirstLine = false;
+		}
+
+		$this->buffer .= $buffer;
 	}
 }
