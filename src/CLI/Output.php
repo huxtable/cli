@@ -201,6 +201,12 @@ class Output
 		{
 			$currentIndent = $isFirstLine ? 0 : $indent;
 
+			// Clean up leading spaces, but only if we're past the first line
+			if( !$isFirstLine )
+			{
+				$string = ltrim( $string );
+			}
+
 			// Add indentation now to save a lot of offset acrobatics :)
 			for( $i=1; $i <= $currentIndent; $i++ )
 			{
