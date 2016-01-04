@@ -310,6 +310,11 @@ OUTPUT;
 
 		foreach($this->commands as $command)
 		{
+			if( $command->getName() == 'help' )
+			{
+				continue;
+			}
+
 			$output->indentedLine( sprintf( '   %-11s%s', $command->getName(), $command->getDescription() ), 14 );
 		}
 
