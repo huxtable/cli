@@ -310,12 +310,20 @@ OUTPUT;
 
 		foreach($this->commands as $command)
 		{
-			if( $command->getName() == 'help' )
+			$commandName = $command->getName();
+			$commandDescription = $command->getDescription();
+
+			if( $commandName == 'help' )
 			{
 				continue;
 			}
 
-			$output->indentedLine( sprintf( '   %-11s%s', $command->getName(), $command->getDescription() ), 14 );
+			$commandString = new Format\String( $commandName );
+			$commandString->bold();
+			$commandString->pad( 11 );
+
+			$line = "   {$commandString}{$commandDescription}";
+			$output->wrappedLine( $line, 11 );
 		}
 
 		$output->line();
