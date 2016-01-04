@@ -57,25 +57,43 @@ class Output
 		$length = strlen( $string );
 		$width = $this->getCols();
 
+		// Save some cycles for strings that already don't wrap
 		if( $length <= $width )
 		{
 			$this->buffer .= $string . PHP_EOL;
 			return;
 		}
 
-		$buffer = substr( $string, 0, $width ) . PHP_EOL;
-		$bufferRight = substr( $string, $width );
+		$buffer = '';
+		$isFirstLine = true;
 
-		$lines = str_split( $bufferRight, $width - $indent );
-
-		foreach( $lines as $line )
+		while( strlen( $string ) > 0 )
 		{
-			for( $i=1; $i <= $indent; $i++ )
+			$currentIndent = $isFirstLine ? 0 : $indent;
+
+			// Add indentation now to save a lot of offset acrobatics :)
+			for( $i=1; $i <= $currentIndent; $i++ )
 			{
-				$buffer .= ' ';
+				$string = ' ' . $string;
 			}
 
-			$buffer .= ltrim( $line ) . PHP_EOL;
+			// If neither character is a space, slide back until one of them is
+			$offset = 0;
+			$lineBreak = substr( $string, $width - 1 + $offset, 2 );
+
+			while( strlen( trim( $lineBreak ) ) == 2 )
+			{
+				$offset--;
+				$lineBreak = substr( $string, $width - 1 + $offset, 2 );
+			};
+
+			// This line is done, add it to the buffer
+			$buffer .= substr( $string, 0, $width + $offset ) . PHP_EOL;
+
+			// Trim off used portion of string
+			$string = substr( $string, $width + $offset );
+
+			$isFirstLine = false;
 		}
 
 		$this->buffer .= $buffer;
