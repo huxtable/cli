@@ -13,24 +13,21 @@ class String
 	protected $backgroundColor;
 
 	/**
-	 * @var	boolean
-	 */
-	protected $bold=false;
-
-	/**
 	 * @var	string
 	 */
 	protected $foregroundColor;
 
 	/**
+	 * Foreground color prefix, which affects properties like bold, underline, etc.
+	 *
+	 * @var	number
+	 */
+	protected $prefix=0;
+
+	/**
 	 * @var	string
 	 */
 	protected $string;
-
-	/**
-	 * @var	boolean
-	 */
-	protected $underline=false;
 
 	/**
 	 * @param	string	$string
@@ -46,23 +43,23 @@ class String
 	 */
 	public function __toString()
 	{
-		$bold = $this->bold ? "1" : "0";
-		if( $this->bold == true && !isset( $this->foregroundColor ) )
+		if( $this->prefix != 0 && !isset( $this->foregroundColor ) )
 		{
-			$this->foregroundColor = 'grey';
+			$this->foregroundColor = 'none';
 		}
 
 		$foregroundColors =
 		[
-			'black'		=> "{$bold};30",
-			'red'		=> "{$bold};31",
-			'green'		=> "{$bold};32",
-			'yellow'	=> "{$bold};33",
-			'blue'		=> "{$bold};34",
-			'purple'	=> "{$bold};35",
-			'cyan'		=> "{$bold};36",
-			'gray'		=> "{$bold};37",
-			'grey'		=> "{$bold};37",
+			'none'		=> "{$this->prefix};29",
+			'black'		=> "{$this->prefix};30",
+			'red'		=> "{$this->prefix};31",
+			'green'		=> "{$this->prefix};32",
+			'yellow'	=> "{$this->prefix};33",
+			'blue'		=> "{$this->prefix};34",
+			'purple'	=> "{$this->prefix};35",
+			'cyan'		=> "{$this->prefix};36",
+			'gray'		=> "{$this->prefix};37",
+			'grey'		=> "{$this->prefix};37",
 		];
 
 		$backgroundColors =
@@ -91,12 +88,30 @@ class String
 	}
 
 	/**
-	 * @param	boolean	$bold
+	 * @param	string	$color
 	 * @return	self
 	 */
-	public function bold( $bold=true )
+	public function backgroundColor( $color )
 	{
-		$this->bold = $bold;
+		$this->backgroundColor = $color;
+		return $this;
+	}
+
+	/**
+	 * @return	self
+	 */
+	public function blink()
+	{
+		$this->prefix = 5;
+		return $this;
+	}
+
+	/**
+	 * @return	self
+	 */
+	public function bold()
+	{
+		$this->prefix = 1;
 		return $this;
 	}
 
@@ -111,6 +126,15 @@ class String
 	}
 
 	/**
+	 * @return	self
+	 */
+	public function invert()
+	{
+		$this->prefix = 7;
+		return $this;
+	}
+
+	/**
 	 * Get length of unformatted string
 	 *
 	 * @return	number
@@ -121,12 +145,20 @@ class String
 	}
 
 	/**
-	 * @param	boolean	$underline
 	 * @return	self
 	 */
-	public function underline( $underline=true )
+	public function normal()
 	{
-		$this->underline = true;
+		$this->prefix = 0;
+		return $this;
+	}
+
+	/**
+	 * @return	self
+	 */
+	public function underline()
+	{
+		$this->prefix = 4;
 		return $this;
 	}
 }
