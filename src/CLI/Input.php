@@ -5,6 +5,8 @@
  */
 namespace Huxtable\CLI;
 
+use Huxtable\CLI\Format\String;
+
 class Input
 {
 	/**
@@ -141,7 +143,7 @@ class Input
 				if(substr($arguments[$i], 1, 1) != '-')
 				{
 					$option = substr($arguments[$i], 1);
-	
+
 					for($j=0; $j<strlen($option); $j++)
 					{
 						$this->options['command'][substr($option, $j, 1)] = true;
@@ -163,65 +165,50 @@ class Input
 			}
 
 			$i++;
-		}	
+		}
 	}
 
 
 	/**
 	 * Present a prompt and return the response
-	 * 
+	 *
 	 * @param	string	$prompt
 	 * @param	string	$default	If response is empty, default answer will be used
-	 * @param	array	$choices	Array of choices to display
 	 * @return	string
 	 */
-	static public function prompt( $prompt, $default='', array $choices=[] )
+	static public function prompt( $prompt, $required=false, $default=null )
 	{
-		if( count( $choices ) > 0 )
+		if( $required )
 		{
-			echo PHP_EOL;
-			for( $i=0; $i<count( $choices ); $i++ )
-			{
-				$index  = $i+1;
-				$option = sprintf(
-					'  %s %s',
-					Format::colorize( "[{$index}]", 'green' ),
-					$choices[$i]
-				);
+			$promptString = new String( $prompt );
 
-				echo $option . PHP_EOL;
+			$output = sprintf(
+				'%s: ',
+				$promptString
+			);
+
+			$response = '';
+			while( strlen( $response ) == 0 )
+			{
+				$response = readline( $output );
 			}
-			echo PHP_EOL;
 		}
-
-		$output = sprintf(
-			'%s [%s]: ',
-			Format::colorize( $prompt, 'green' ),
-			Format::colorize( $default, 'yellow' )
-		);
-
-		$response = readline( $output );
-
-		if( strlen( $response ) == 0 )
+		else
 		{
-			$response = $default;
-		}
+			$defaultString = new String( $default );
+			$defaultString->foregroundColor( 'yellow' );
 
-		if( count( $choices ) > 0 )
-		{
-			$index = $response - 1;
+			$output = sprintf(
+				'%s [%s]: ',
+				$prompt,
+				$defaultString
+			);
 
-			if( isset( $choices[ $index ] ) )
+			$response = readline( $output );
+
+			if( strlen( $response ) == 0 )
 			{
-				$response = $choices[ $index ];
-			}
-			// Menu options are required, so call it again... :\
-			else
-			{
-				if( !in_array( $response, $choices ) )
-				{
-					$response = self::prompt( $prompt, $default, $choices );
-				}
+				$response = $default;
 			}
 		}
 
