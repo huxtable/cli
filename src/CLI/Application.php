@@ -9,7 +9,7 @@ use Huxtable\CLI\Command\CommandInvokedException;
 use Huxtable\CLI\Command\IncorrectUsageException;
 use Huxtable\CLI\Command\InvalidCommandException;
 use Huxtable\CLI\Git;
-use Huxtable\Core\FileInfo;
+use Huxtable\Core\File;
 use Huxtable\Core\HTTP;
 
 class Application
@@ -56,7 +56,7 @@ class Application
 	protected $output='';
 
 	/**
-	 * @var FileInfo
+	 * @var File\Directory
 	 */
 	protected $userDir;
 
@@ -87,9 +87,9 @@ class Application
 		$this->version = $version;
 		$this->input   = is_null($input) ? new Input() : $input;
 
-		if( $this->userDir instanceof FileInfo )
+		if( $this->userDir instanceof File\Directory )
 		{
-			if( !$this->userDir->isDir() )
+			if( !$this->userDir->exists() )
 			{
 				$this->userDir->mkdir();
 			}
@@ -345,7 +345,7 @@ OUTPUT;
 	 */
 	public function logError( $message )
 	{
-		if( $this->userDir instanceof FileInfo )
+		if( $this->userDir instanceof File\Directory )
 		{
 			date_default_timezone_set( 'UTC' );
 			$logEntry = sprintf( "%s   %s\n", date( 'm/d/Y G:i:s' ), $message );
