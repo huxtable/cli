@@ -58,6 +58,53 @@ class String
 			$this->foregroundColor = 'none';
 		}
 
+		/**
+		 * Substring formatting
+		 */
+		 // Bold
+ 		$patternBold = '/\{b\}([^\{]+)\{\/b\}/';
+ 		preg_match( $patternBold, $this->string, $matchesBold );
+ 		if( count( $matchesBold) > 0 )
+ 		{
+ 			$substring = new self( $matchesBold[1] );
+ 			$substring->bold();
+
+ 			$this->string = str_replace( $matchesBold[0], $substring, $this->string );
+ 		}
+
+		// Underline
+		$patternUnderline = '/\{ul\}([^\{]+)\{\/ul\}/';
+		preg_match( $patternUnderline, $this->string, $matchesUnderline );
+		if( count( $matchesUnderline) > 0 )
+		{
+			$substring = new self( $matchesUnderline[1] );
+			$substring->underline();
+
+			$this->string = str_replace( $matchesUnderline[0], $substring, $this->string );
+		}
+
+		// Foreground color
+		$patternForegroundColor = '/\{fg:([^\}]+)\}([^\{]+)\{\/fg:[^\}]+\}/';
+		preg_match( $patternForegroundColor, $this->string, $matchesForegroundColor );
+		if( count( $matchesForegroundColor) > 0 )
+		{
+			$substring = new self( $matchesForegroundColor[2] );
+			$substring->foregroundColor( $matchesForegroundColor[1] );
+
+			$this->string = str_replace( $matchesForegroundColor[0], $substring, $this->string );
+		}
+
+		// Background color
+		$patternBgColor = '/\{bg:([^\}]+)\}([^\{]+)\{\/bg:[^\}]+\}/';
+		preg_match( $patternBgColor, $this->string, $matchesBgColor );
+		if( count( $matchesBgColor) > 0 )
+		{
+			$substring = new self( $matchesBgColor[2] );
+			$substring->backgroundColor( $matchesBgColor[1] );
+
+			$this->string = str_replace( $matchesBgColor[0], $substring, $this->string );
+		}
+
 		$foregroundColors =
 		[
 			'none'		=> "{$this->prefix};29",
