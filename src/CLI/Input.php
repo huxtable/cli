@@ -168,25 +168,24 @@ class Input
 		}
 	}
 
-
 	/**
 	 * Present a prompt and return the response
 	 *
-	 * @param	string	$prompt
-	 * @param	string	$default	If response is empty, default answer will be used
+	 * @param	string		$prompt
+	 * @param	boolean		$required
 	 * @return	string
 	 */
-	static public function prompt( $prompt, $required=false, $default=null )
+	static public function prompt( $prompt, $required=false )
 	{
+		$promptString = new String( $prompt );
+
+		$output = sprintf(
+			'%s ',
+			$promptString
+		);
+
 		if( $required )
 		{
-			$promptString = new String( $prompt );
-
-			$output = sprintf(
-				'%s: ',
-				$promptString
-			);
-
 			$response = '';
 			while( strlen( $response ) == 0 )
 			{
@@ -195,21 +194,7 @@ class Input
 		}
 		else
 		{
-			$defaultString = new String( $default );
-			$defaultString->foregroundColor( 'yellow' );
-
-			$output = sprintf(
-				'%s [%s]: ',
-				$prompt,
-				$defaultString
-			);
-
 			$response = readline( $output );
-
-			if( strlen( $response ) == 0 )
-			{
-				$response = $default;
-			}
 		}
 
 		return $response;
