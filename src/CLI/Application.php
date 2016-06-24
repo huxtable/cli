@@ -319,11 +319,10 @@ OUTPUT;
 			}
 
 			$commandString = new Format\String( $commandName );
-			$commandString->bold();
 			$commandString->pad( 11 );
 
 			$line = "   {$commandString}{$commandDescription}";
-			$output->wrappedLine( $line, 11 );
+			$output->wrappedLine( $line, 14 );
 		}
 
 		$output->line();
