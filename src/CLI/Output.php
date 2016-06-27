@@ -23,6 +23,75 @@ class Output
 	protected $rows;
 
 	/**
+	 * @param	Exception	$e
+	 * @param	array		$argv
+	 * @param	string		$url
+	 * @return	string
+	 */
+	static public function exceptionLog( \Exception $e, array $argv, $url )
+	{
+		$output = PHP_EOL;
+
+		$terminalWidth = exec( 'tput cols' );
+		$dividerStrong = '';
+		$dividerLight  = '';
+
+		for( $i = 0; $i < ($terminalWidth); $i++ )
+		{
+			$dividerStrong .= '=';
+			$dividerLight  .= '-';
+
+		}
+
+		$output .= $dividerStrong . PHP_EOL;
+
+		$command = implode( ' ', $argv );
+
+		$output .= " Command:    {$command}" . PHP_EOL;
+		$output .= " Exception:  {$e->getMessage()}". PHP_EOL;
+		$output .= " Code:       {$e->getCode()}". PHP_EOL;
+		$output .= " Location:   {$e->getFile()}:{$e->getLine()}".  PHP_EOL;
+
+		$output .= $dividerLight . PHP_EOL;
+
+		$traceItems = $e->getTrace();
+		$methods = [];
+		$files = [];
+
+		for( $t = 0; $t < count( $traceItems ); $t++ )
+		{
+			$traceItem = $traceItems[$t];
+
+			if( isset( $traceItem['file'] ) )
+			{
+				$line = ' %s: %s:%s';
+				$files[] = sprintf( $line, $t, $traceItem['file'], $traceItem['line'] );
+			}
+			if( isset( $traceItem['class'] ) )
+			{
+				$line = ' %s: %s%s%s';
+				$methods[] = sprintf( $line, $t, $traceItem['class'], $traceItem['type'], $traceItem['function'] );
+			}
+
+		}
+
+		foreach( $files as $file )
+		{
+			$output .= $file . PHP_EOL;
+		}
+		$output .= PHP_EOL;
+		foreach( $methods as $method )
+		{
+			$output .= $method . PHP_EOL;
+		}
+
+		$output .= $dividerStrong . PHP_EOL . PHP_EOL;
+		$output .= "Please submit a bug report with this error log. {$url}" . PHP_EOL . PHP_EOL;
+
+		return $output;
+	}
+
+	/**
 	 * @return	string
 	 */
 	public function flush()
