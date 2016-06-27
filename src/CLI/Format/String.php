@@ -43,7 +43,7 @@ class String
 	 * @param	string	$string
 	 * @return	void
 	 */
-	public function __construct( $string )
+	public function __construct( $string='' )
 	{
 		$this->string = $string;
 	}
@@ -243,6 +243,15 @@ class String
 	{
 		$this->prefix = 0;
 		return $this;
+	}
+
+	/**
+	 * @param	string	$string
+	 * @return	self
+	 */
+	public function setString( $string )
+	{
+		$this->string = $string;
 	}
 
 	/**
