@@ -36,6 +36,11 @@ class Application
 	protected $defaultCommand;
 
 	/**
+	 * @var	Huxtable\Core\File\Directory
+	 */
+	protected $dirApp;
+
+	/**
 	 * @var int
 	 */
 	protected $exit=0;
@@ -66,12 +71,13 @@ class Application
 	protected $version;
 
 	/**
-	 * @param	string	$name				Application name
-	 * @param	string	$version
-	 * @param	string	$phpMinimumVersion
-	 * @param	Input	$input
+	 * @param	string							$name				Application name
+	 * @param	string							$version
+	 * @param	string							$phpMinimumVersion
+	 * @param	Huxtable\Core\File\Directory	$dirApp
+	 * @param	Huxtable\CLI\Input				$input
 	 */
-	public function __construct( $name, $version, $phpMinimumVersion=null, Input $input=null )
+	public function __construct( $name, $version, $phpMinimumVersion=null, File\Directory $dirApp, Input $input=null )
 	{
 		if( !is_null( $phpMinimumVersion ) )
 		{
@@ -87,6 +93,10 @@ class Application
 		$this->version = $version;
 		$this->input   = is_null($input) ? new Input() : $input;
 
+		/* Application root directory */
+		$this->dirApp = $dirApp;
+
+		/* Helper function, which has probably never been used */
 		if( $this->userDir instanceof File\Directory )
 		{
 			if( !$this->userDir->exists() )
@@ -95,7 +105,7 @@ class Application
 			}
 		}
 
-		// Register default commands
+		/* Register default commands */
 		$help = new Command('help', "Display help information about {$this->name}", [$this, 'commandHelp']);
 		$help->setUsage('help <command>');
 		$this->registerCommand($help);
