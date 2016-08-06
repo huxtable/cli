@@ -26,6 +26,11 @@ class Application
 	protected $aliases=[];
 
 	/**
+	 * @var	array
+	 */
+	protected $cleanupActions=[];
+
+	/**
 	 * @var array
 	 */
 	protected $commands=[];
@@ -181,6 +186,48 @@ USAGE;
 		$command->registerCookieController( $this->cookies );
 
 		return call_user_func_array($command->getClosure(), $arguments);
+	}
+
+	/**
+	 * @return	void
+	 */
+	public function cleanUpSelf()
+	{
+		/* Check cookies to see if cleanup has been performed for this version */
+		$versionSlug = 'v' . str_replace( '.', '_', $this->version );
+		$didPerformCleanup = $this->getCookie( 'cleanup', $versionSlug ) == true;
+
+		if( $didPerformCleanup )
+		{
+			return;
+		}
+
+		foreach( $this->cleanupActions as $cleanupVersion => $cleanupAction )
+		{
+			/* Even though a newer definition *shouldn't* ever appear, only perform
+			   cleanup actions up to the current version just to be safe... */
+			if( version_compare( $cleanupVersion, $this->version, "<=" ) )
+			{
+				$filesToDelete = call_user_func( $cleanupAction, $this->dirApp );
+
+				/* Some cleanup actions might not require file deletion */
+				if( !is_array( $filesToDelete ) )
+				{
+					continue;
+				}
+
+				foreach( $filesToDelete as $file )
+				{
+					if( $file->exists() )
+					{
+						$file->delete();
+					}
+				}
+			}
+		}
+
+		/* Write to cookies file */
+		$this->setCookie( 'cleanup', $versionSlug, "true" );
 	}
 
 	/**
@@ -390,13 +437,13 @@ OUTPUT;
 	}
 
 	/**
-	 * Optionally specify a command to run if the application is run without arguments
-	 *
+	 * @param	string		$version
+	 * @param	Closure		$action
 	 * @return	void
 	 */
-	public function registerDefaultCommand (Command $command)
+	public function registerCleanupAction( $version, \Closure $action )
 	{
-		$this->defaultCommand = $command;
+		$this->cleanupActions[$version] = $action;
 	}
 
 	/**
@@ -411,6 +458,16 @@ OUTPUT;
 		{
 			$this->aliases[$alias] = $command->getName();
 		}
+	}
+
+	/**
+	 * Optionally specify a command to run if the application is run without arguments
+	 *
+	 * @return	void
+	 */
+	public function registerDefaultCommand (Command $command)
+	{
+		$this->defaultCommand = $command;
 	}
 
 	/**
