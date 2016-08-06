@@ -20,6 +20,11 @@ class Command
 	protected $closure;
 
 	/**
+	 * @var	Huxtable\CLI\Cookie
+	 */
+	protected $cookies;
+
+	/**
 	 * @var string
 	 */
 	protected $description;
@@ -77,6 +82,16 @@ class Command
 	}
 
 	/**
+	 * @param	string	$section
+	 * @param	string	$name
+	 * @return	void
+	 */
+	public function deleteCookie( $section, $name )
+	{
+	   $this->cookies->delete( $section, $name );
+	}
+
+	/**
 	 * Return array of aliases
 	 *
 	 * @return	array
@@ -98,6 +113,16 @@ class Command
 
 		$reflect = new \ReflectionMethod($this->closure);
 		return $reflect->getClosure();
+	}
+
+	/**
+	 * @param	string	$section
+	 * @param	string	$name
+	 * @return	mixed
+	 */
+	public function getCookie( $section, $name )
+	{
+		return $this->cookies->get( $section, $name );
 	}
 
 	/**
@@ -203,6 +228,15 @@ class Command
 	}
 
 	/**
+	 * @param	Huxtable\CLI\Cookie		$cookie
+	 * @return	void
+	 */
+	public function registerCookieController( Cookie $cookie )
+	{
+		$this->cookies = $cookie;
+	}
+
+	/**
 	 * @param	string	$option
 	 */
 	public function registerOption($option)
@@ -252,6 +286,17 @@ class Command
 		}
 
 		throw new InvalidClosureException("Invalid closure passed for '{$this->name}'");
+	}
+
+	/**
+	 * @param	string	$section
+	 * @param	string	$name
+	 * @param	mixed	$value
+	 * @return	void
+	 */
+	public function setCookie( $section, $name, $value )
+	{
+		$this->cookies->set( $section, $name, $value );
 	}
 
 	/**

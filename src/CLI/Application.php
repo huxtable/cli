@@ -126,6 +126,10 @@ USAGE;
 			$upgrade->setUsage( $upgradeUsage );
 			$this->registerCommand($upgrade);
 		}
+
+		/* Cookie Controller */
+		$fileCookies = $this->dirApp->child( '.cookies' );
+		$this->cookies = new Cookie( $fileCookies );
 	}
 
 	/**
@@ -172,6 +176,9 @@ USAGE;
 		{
 			$command->setOptionValue($key, $value);
 		}
+
+		/* Lazy-load Cookies controller */
+		$command->registerCookieController( $this->cookies );
 
 		return call_user_func_array($command->getClosure(), $arguments);
 	}
@@ -285,6 +292,16 @@ OUTPUT;
 	}
 
 	/**
+	 * @param	string	$section
+	 * @param	string	$name
+	 * @return	void
+	 */
+	public function deleteCookie( $section, $name )
+	{
+	   $this->cookies->delete( $section, $name );
+	}
+
+	/**
 	 * @param	string	$name
 	 * @return	string
 	 */
@@ -305,6 +322,16 @@ OUTPUT;
 		}
 
 		return $this->commands[$name];
+	}
+
+	/**
+	 * @param	string	$section
+	 * @param	string	$name
+	 * @return	mixed
+	 */
+	public function getCookie( $section, $name )
+	{
+		return $this->cookies->get( $section, $name );
 	}
 
 	/**
@@ -480,6 +507,17 @@ OUTPUT;
 	}
 
 	/**
+	 * @param	string	$section
+	 * @param	string	$name
+	 * @param	mixed	$value
+	 * @return	void
+	 */
+	public function setCookie( $section, $name, $value )
+	{
+		$this->cookies->set( $section, $name, $value );
+	}
+
+	/**
 	 * Terminate the application
 	 */
 	public function stop()
@@ -631,5 +669,3 @@ OUTPUT;
 		return $result;
 	}
 }
-
-?>
