@@ -81,11 +81,13 @@ class Command
 	}
 
 	/**
+	 * Alias for self::registerSubcommand
+	 *
 	 * @param	Command	$command
 	 */
 	public function addSubcommand(Command $command)
 	{
-		$this->subcommands[$command->getName()] = $command;
+		$this->registerSubcommand( $command );
 	}
 
 	/**
@@ -252,6 +254,14 @@ class Command
 		{
 			$this->options[$option] = null;
 		}
+	}
+
+	/**
+	 * @param	Command	$command
+	 */
+	public function registerSubcommand( Command $command )
+	{
+		$this->subcommands[$command->getName()] = $command;
 	}
 
 	/**
