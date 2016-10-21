@@ -37,6 +37,10 @@ class Command
 
 	/**
 	 * @var	Huxtable\Core\File\Directory
+	 */
+	public $dirData;
+
+	/**
 	 * @var string
 	 */
 	protected $name;
@@ -322,6 +326,14 @@ class Command
 	public function setCookie( $section, $name, $value )
 	{
 		$this->cookies->set( $section, $name, $value );
+	}
+
+	/**
+	 * @param	Huxtable\Core\File\Directory	$dirData
+	 */
+	public function setDataDirectory( File\Directory $dirData )
+	{
+		$this->dirData = $dirData;
 	}
 
 	/**
