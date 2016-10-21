@@ -182,6 +182,8 @@ USAGE;
 			$command->setOptionValue($key, $value);
 		}
 
+		$command->setAppDirectory( $this->dirApp );
+
 		/* Lazy-load Cookies controller */
 		$command->registerCookieController( $this->cookies );
 

@@ -6,6 +6,7 @@
 namespace Huxtable\CLI;
 
 use Huxtable\CLI\Command\InvalidClosureException;
+use Huxtable\Core\File;
 
 class Command
 {
@@ -30,6 +31,12 @@ class Command
 	protected $description;
 
 	/**
+	 * @var	Huxtable\Core\File\Directory
+	 */
+	public $dirApp;
+
+	/**
+	 * @var	Huxtable\Core\File\Directory
 	 * @var string
 	 */
 	protected $name;
@@ -245,6 +252,14 @@ class Command
 		{
 			$this->options[$option] = null;
 		}
+	}
+
+	/**
+	 * @param	Huxtable\Core\File\Directory	$dirApp
+	 */
+	public function setAppDirectory( File\Directory $dirApp )
+	{
+		$this->dirApp = $dirApp;
 	}
 
 	/**
