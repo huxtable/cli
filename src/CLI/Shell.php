@@ -5,11 +5,13 @@
  */
 namespace Huxtable\CLI;
 
+use Huxtable\CLI\Format\String;
+
 class Shell
 {
 	/**
 	 * Execute an external command, generate friendly output and return the result
-	 * 
+	 *
 	 * @param	string	$command
 	 * @param	boolean	$formatted	Return formatted output in addition to raw
 	 * @param	string	$prefix
@@ -36,11 +38,17 @@ class Shell
 
 			if( $formatted )
 			{
-				$output['formatted'] .= Output::colorize( $prefix . $line, $color ) . PHP_EOL;
+				$output['formatted'] .= $prefix . $line . PHP_EOL;
 			}
 		}
 
 		$output['raw'] = trim( $output['raw'] );
+		if( $formatted )
+		{
+			$formattedString = new String( $output['formatted'] );
+			$formattedString->foregroundColor( $color );
+			$output['formatted'] = $formattedString;
+		}
 
 		return [
 			'command' => $commandOriginal,
@@ -51,7 +59,7 @@ class Shell
 
 	/**
 	 * Gets the value of an environment variable
-	 * 
+	 *
 	 * @param	string	$varname	The variable name
 	 * @return	string
 	 */
