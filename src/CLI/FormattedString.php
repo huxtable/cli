@@ -3,9 +3,9 @@
 /*
  * This file is part of Huxtable\CLI
  */
-namespace Huxtable\CLI\Format;
+namespace Huxtable\CLI;
 
-class String
+class FormattedString
 {
 	/**
 	 * @var	string

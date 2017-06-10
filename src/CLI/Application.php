@@ -404,7 +404,7 @@ OUTPUT;
 				continue;
 			}
 
-			$commandString = new Format\String( $commandName );
+			$commandString = new FormattedString( $commandName );
 			$commandString->pad( 11 );
 
 			$line = "   {$commandString}{$commandDescription}";

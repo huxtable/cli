@@ -5,7 +5,7 @@
  */
 namespace Huxtable\CLI;
 
-use Huxtable\CLI\Format\String;
+use Huxtable\CLI\FormattedString;
 
 class Input
 {
