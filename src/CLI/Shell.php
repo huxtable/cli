@@ -45,7 +45,7 @@ class Shell
 		$output['raw'] = trim( $output['raw'] );
 		if( $formatted )
 		{
-			$formattedString = new String( $output['formatted'] );
+			$formattedString = new FormattedString( $output['formatted'] );
 			$formattedString->foregroundColor( $color );
 			$output['formatted'] = $formattedString;
 		}
